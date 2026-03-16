@@ -85,7 +85,7 @@ export const C = {
     PLAYER_R:     32,       // slightly larger than normal balls
     PLAYER_COLOR: '#00eeff',
     PLAYER_NAME:  'HERO',
-    BOSS_HP:     300,       // dungeon boss HP
+    BOSS_HP:     225,       // dungeon boss HP
     BOSS_R:       60,       // dungeon boss radius
     BOSS_COLOR:  '#ff2200',
     BOSS_NAME:   'DEMON LORD',
