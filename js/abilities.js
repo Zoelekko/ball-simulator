@@ -201,9 +201,9 @@ export function tickOrbs(balls){
           picked = true;
         }
       }
-      // Check enemies
+      // Check normal enemies (not boss — boss has its own ability timer)
       if(!picked){
-        const enemies = _G.dungeonAliveEnemies();
+        const enemies = _G.dungeonAliveEnemies().filter(e=>!e.isDungeonBoss);
         for(const enemy of enemies){
           const dx=enemy.x-o.x, dy=enemy.y-o.y;
           if(Math.hypot(dx,dy)<enemy.r+ORB_RADIUS){
