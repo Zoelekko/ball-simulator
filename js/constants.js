@@ -101,7 +101,7 @@ export const C = {
     PLAYER_DMG_TO_ENEMY: 2,    // player deals 2 damage per collision
     ENEMY_DMG_TO_PLAYER: 1.25, // enemies deal 1.25 damage per collision (25% more)
     BOSS_DMG_TO_PLAYER:  2.5,  // boss deals 2.5 damage per collision (25% more)
-    PLAYER_DMG_TO_BOSS:  2,    // player deals 2 damage to boss per collision
+    PLAYER_DMG_TO_BOSS:  6,    // player deals 6 damage to boss per collision
     HIT_CAP_PLAYER:     15,  // max ability damage player can take per hit
   },
 };
