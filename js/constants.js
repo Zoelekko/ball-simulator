@@ -81,7 +81,7 @@ export const C = {
   },
   DUNGEON: {
     TOTAL_ROOMS:   6,       // 5 normal + 1 boss room
-    PLAYER_HP:   100,       // player starts with 100 HP
+    PLAYER_HP:   150,       // player starts with 150 HP
     PLAYER_R:     32,       // slightly larger than normal balls
     PLAYER_COLOR: '#00eeff',
     PLAYER_NAME:  'HERO',
