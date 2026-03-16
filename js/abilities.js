@@ -175,40 +175,21 @@ export function tickOrbs(balls){
         if(type) applyOrb(_G.dungeonBoss, type);
       }
     }
-    // Enemy auto-abilities: enemies periodically get speed boosts and visual effects
-    // (no orb-based abilities to avoid friendly-fire from FX system)
+    // Enemy auto-abilities: enemies periodically use real abilities against the player
     _G.dungeonEnemyAbilityTimer++;
     if(_G.dungeonEnemyAbilityTimer >= C.DUNGEON.ENEMY_ABILITY_INTERVAL){
       _G.dungeonEnemyAbilityTimer = 0;
       const enemies = _G.dungeonAliveEnemies();
       if(enemies.length > 0){
         const enemy = enemies[Math.floor(Math.random()*enemies.length)];
-        // Simple safe effects: speed boost, rage, or shield
-        const effect = Math.random();
-        if(effect < 0.4){
-          // Speed rage — rush toward player
-          enemy.rage = 180;
-          const spd = Math.hypot(enemy.vx,enemy.vy)||enemy.baseSpd;
-          const t = Math.max(spd, enemy.baseSpd)*2.5;
-          if(_G.dungeonPlayer && _G.dungeonPlayer.alive){
-            const dx=_G.dungeonPlayer.x-enemy.x, dy=_G.dungeonPlayer.y-enemy.y, d=Math.hypot(dx,dy)||1;
-            enemy.vx=(dx/d)*t; enemy.vy=(dy/d)*t;
-          }
-          _burst(enemy.x, enemy.y, '#ffcc00', 16);
-          _G.arenaFlash.color='#ffcc00'; _G.arenaFlash.alpha=0.2;
-        } else if(effect < 0.7){
-          // Shield — blocks one hit
-          enemy.shieldFrames = 180;
-          _burst(enemy.x, enemy.y, '#44aaff', 12);
-        } else {
-          // Giant mode — grows bigger temporarily
-          enemy.r = C.DUNGEON.ENEMY_R * 1.6;
-          enemy.giantActive = true;
-          enemy.giantFrames = 240;
-          _burst(enemy.x, enemy.y, '#ff8800', 16);
-          _G.shakeFrames=10; _G.shakeAmt=8;
-        }
-        _Snd.hit();
+        const ENEMY_POOL = [
+          'gojo_red','toji_chain','rasengan','chidori','gojo_blue',
+          'hellfire','blood_rain','makima_chain','sand_tsunami','chainsaw_rev',
+          'prison','timestop','tsukuyomi',
+        ];
+        const typeId = ENEMY_POOL[Math.floor(Math.random()*ENEMY_POOL.length)];
+        const type = ORB_TYPES.find(t=>t.id===typeId);
+        if(type) applyOrb(enemy, type);
       }
     }
     // Spawn orbs faster in dungeon mode (player needs abilities to clear rooms)
