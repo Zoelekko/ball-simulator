@@ -162,7 +162,7 @@ export class Ball {
     if(this.shieldFrames>0){ this.flash=C.FLASH; return; } // shield absorbs hit
     if(this.isBoss) dmg=Math.min(dmg, C.BOSS.DMG_IN_CAP); // boss resists ability burst damage
     if(this.isDungeonPlayer) dmg=Math.min(dmg, C.DUNGEON.HIT_CAP_PLAYER); // dungeon player resists burst
-    if(this.isDungeonBoss) dmg=Math.min(dmg, 50); // cap per-hit damage to boss
+    if(this.isDungeonBoss) dmg=Math.min(dmg, 125); // cap per-hit damage to boss
     this.hp-=dmg;
     // Reset stall detection — someone got hit, action is happening
     _setStall(0, false, 0);
