@@ -90,7 +90,7 @@ function ballPair(a,b){
         enemy.hit(enemyTake);
       }
       addDmg(player, enemyTake*10);
-      G.cd[k]=C.COOLDOWN; Snd.hit();
+      G.cd[k] = enemy.isDungeonBoss ? 0 : C.COOLDOWN; Snd.hit();
       G.shakeFrames=Math.max(G.shakeFrames, 10); G.shakeAmt=Math.max(G.shakeAmt, 8);
       if(aA&&!a.alive){ Snd.kill(); Snd.onKill();
         if(a.isDungeonPlayer){ G.arenaFlash.color='#ff0000'; G.arenaFlash.alpha=0.8; G.shakeFrames=40; G.shakeAmt=30; }
