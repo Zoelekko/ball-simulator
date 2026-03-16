@@ -69,10 +69,27 @@ function ballPair(a,b){
     if(G.dungeonMode && (a.isDungeonPlayer||b.isDungeonPlayer)){
       const player=a.isDungeonPlayer?a:b, enemy=a.isDungeonPlayer?b:a;
       const playerDmg = enemy.isDungeonBoss ? C.DUNGEON.BOSS_DMG_TO_PLAYER : C.DUNGEON.ENEMY_DMG_TO_PLAYER;
-      const enemyTake = enemy.isDungeonBoss ? C.DUNGEON.PLAYER_DMG_TO_BOSS : C.DUNGEON.PLAYER_DMG_TO_ENEMY;
+      let enemyTake = enemy.isDungeonBoss ? C.DUNGEON.PLAYER_DMG_TO_BOSS : C.DUNGEON.PLAYER_DMG_TO_ENEMY;
+      // Boss room rage escalation based on remaining time
+      if(enemy.isDungeonBoss){
+        const framesLeft = C.DUNGEON.BOSS_ROOM_FRAMES - G.dungeonRoomFrames;
+        let heroMult = 1, bossMult = 1;
+        if(framesLeft <= 600){       // 10s left: hero +50% more, boss +25% more (stacks)
+          heroMult = 1.5 * 1.25 * 1.5; bossMult = 1.25 * 1.25;
+        } else if(framesLeft <= 1200){ // 20s left: hero +25%, boss +25%
+          heroMult = 1.5 * 1.25; bossMult = 1.25;
+        } else if(framesLeft <= 1800){ // 30s left: hero +50%
+          heroMult = 1.5;
+        }
+        enemyTake = enemyTake * heroMult;
+        // boss dmg to player scales with bossMult (more pressure)
+        player.hit(playerDmg * bossMult);
+        enemy.hit(enemyTake);
+      } else {
+        player.hit(playerDmg);
+        enemy.hit(enemyTake);
+      }
       addDmg(player, enemyTake*10);
-      player.hit(playerDmg);
-      enemy.hit(enemyTake);
       G.cd[k]=C.COOLDOWN; Snd.hit();
       G.shakeFrames=Math.max(G.shakeFrames, 10); G.shakeAmt=Math.max(G.shakeAmt, 8);
       if(aA&&!a.alive){ Snd.kill(); Snd.onKill();
