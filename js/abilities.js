@@ -175,23 +175,6 @@ export function tickOrbs(balls){
         if(type) applyOrb(_G.dungeonBoss, type);
       }
     }
-    // Enemy auto-abilities: enemies periodically use real abilities against the player
-    _G.dungeonEnemyAbilityTimer++;
-    if(_G.dungeonEnemyAbilityTimer >= C.DUNGEON.ENEMY_ABILITY_INTERVAL){
-      _G.dungeonEnemyAbilityTimer = 0;
-      const enemies = _G.dungeonAliveEnemies();
-      if(enemies.length > 0){
-        const enemy = enemies[Math.floor(Math.random()*enemies.length)];
-        const ENEMY_POOL = [
-          'gojo_red','toji_chain','rasengan','chidori','gojo_blue',
-          'hellfire','blood_rain','makima_chain','sand_tsunami','chainsaw_rev',
-          'prison','timestop','tsukuyomi',
-        ];
-        const typeId = ENEMY_POOL[Math.floor(Math.random()*ENEMY_POOL.length)];
-        const type = ORB_TYPES.find(t=>t.id===typeId);
-        if(type) applyOrb(enemy, type);
-      }
-    }
     // Spawn orbs faster in dungeon mode (player needs abilities to clear rooms)
     const dungeonInterval = orbRoundFrame < ORB_BURST_FRAMES ? ORB_SPAWN_FAST : Math.floor(ORB_SPAWN_INTERVAL * 0.6);
     if(orbSpawnTimer >= dungeonInterval){
@@ -201,11 +184,13 @@ export function tickOrbs(balls){
       const type = combatOrbs[Math.floor(Math.random()*combatOrbs.length)];
       spawnSpecificOrb(type);
     }
-    // Orb collision — in dungeon, only player picks up orbs
+    // Orb collision — player and enemies both pick up orbs
     for(let i=orbs.length-1;i>=0;i--){
       const o=orbs[i];
       o.life--; o.pulse+=0.08;
       if(o.life<=0){ orbs.splice(i,1); continue; }
+      let picked = false;
+      // Check player first
       const p = _G.dungeonPlayer;
       if(p && p.alive){
         const dx=p.x-o.x, dy=p.y-o.y;
@@ -213,6 +198,20 @@ export function tickOrbs(balls){
           applyOrb(p, o.type);
           _burst(o.x, o.y, o.type.color, 20);
           orbs.splice(i,1);
+          picked = true;
+        }
+      }
+      // Check enemies
+      if(!picked){
+        const enemies = _G.dungeonAliveEnemies();
+        for(const enemy of enemies){
+          const dx=enemy.x-o.x, dy=enemy.y-o.y;
+          if(Math.hypot(dx,dy)<enemy.r+ORB_RADIUS){
+            applyOrb(enemy, o.type);
+            _burst(o.x, o.y, o.type.color, 20);
+            orbs.splice(i,1);
+            break;
+          }
         }
       }
     }
